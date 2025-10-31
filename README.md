@@ -33,44 +33,94 @@ This runbook outlines the framework for a live Azure honeynet comprising intenti
 
 ## 🧪 **Methodology**
 Our comprehensive six-phase lifecycle enhances a deliberately vulnerable Azure environment, transforming it into a self-defending cloud workload. This process guarantees that insights gained are systematically integrated into automated protection strategies.
+**observe → detect → harden → re-test**.
 
-| Phase | Objective | Key Actions |
-|-------|-----------|-------------|
-| **Phase 1 – Exposed Environment** | Attract live threats | Deploy Windows, Linux & SQL VMs with public IPs and permissive NSGs. |
-| **Phase 2 – Log Integration** | Centralize telemetry | Route diagnostics to **Azure Log Analytics**; onboard **Microsoft Sentinel** & **Defender for Cloud**. |
-| **Phase 3 – Baseline Threat Monitoring (24 h)** | Quantify risk | Observe malicious traffic and authentication failures to establish statistical baselines. |
-| **Phase 4 – Detection & Automated Response** | Halt live attacks | Create Sentinel analytics rules & playbooks aligned with **NIST SP 800-61** to isolate or block IOCs in real time. |
-| **Phase 5 – Security Hardening** | Shrink attack surface | Apply Microsoft and **NIST SP 800-53** controls (network segmentation, MFA, patching, PAM). |
-| **Phase 6 – Post-Hardening Assessment & Continuous Defense** | Prevent recurrence | Re-monitor for 24 h, compare metrics, and convert new findings into updated playbooks, TI blocklists, and policy-as-code to stop future attacks.|
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/b5e7f54e-f39f-4769-884f-0fd1eb8b5496" width="700" />
-</p>
+| 🧭 **Phase** | 🎯 **Objective** | ⚙️ **Key Actions** |
+|--------------|------------------|--------------------|
+| **1️⃣ Exposure & Baseline** | Attract live attacks | Deploy public VMs and permissive NSGs to collect baseline telemetry. |
+| **2️⃣ Integration & Logging** | Centralize visibility | Connect data sources (VMs, NSGs, Defender) to **Log Analytics** & **Sentinel**. |
+| **3️⃣ Threat Monitoring (24h)** | Establish metrics | Capture failed logins, malicious flows, and scanning behavior. |
+| **4️⃣ Detection & Response** | Automate containment | Build Sentinel rules & playbooks aligned with **NIST SP 800-61**. |
+| **5️⃣ Security Hardening** | Reduce attack surface | Apply NSG lockdowns, patching, and private endpoints. |
+| **6️⃣ Post-Hardening Validation** | Verify improvement | Re-run KQL queries and visualize "Before vs After" metrics. |
+> A structured **six-phase lifecycle** evolves the lab from *vulnerable → monitored → hardened*, ensuring measurable improvements in posture and detection accuracy.
 
----
+## 🧠 Summary
+| Phase | Objective | Key Outcome |
+|:------|:-----------|:-------------|
+| **Before** | Observe & baseline attacks | Captured brute-force and scanning activity from global IPs |
+| **After** | Harden & automate | Achieved **100% reduction** in Sentinel incidents within 24h |
 
-# 🛡️**Architecture Overview**
-
-## 🔓**Initial Azure Architecture** — Before (Deliberately Vulnerable)
-The Azure environment (Linux SSH, Windows RDP/SMB, SQL) was configured with basic security designed to simulate a high-risk production workload in a sandboxed environment (the honeynet) and attract live cyber threats, gather telemetry, and observe adversary behavior.
-- **Public exposure of critical resources:** Windows & Linux VMs, SQL Server, Storage, Key Vault reachable from the internet.  
-- **Permissive NSGs:** Broad inbound rules allow scanning, brute force, and lateral probes.  
-- **Initial monitoring:** Logs centralized in Log Analytics and surfaced in Sentinel for alerts and investigations.
-<div align="center">
-  <img src="https://github.com/user-attachments/assets/f5ec8a80-09b3-42a4-ac2b-8f6cfb5d2918" width="70%" />
-</div>
-`Public-facing VMs & services are  exposed and attract attackers.`
 
 ---
 
-## 🔒**Hardened Azure Architecture** —  After (Secure)
-Following the threat analysis, the environment was restructured to align with secure architecture principles and NIST SP 800-53, specifically SC-7(3) for Access Restrictions. Key enhancements included minimizing external exposure, tightening NSG rules, segmenting subnets/VLANs, and securing OS/app configurations. Data now flows into Microsoft Sentinel for enhanced correlation, improved alerts, and more effective investigations.
-- **Restricted access:** NSGs allow only trusted source IPs; deny all else.  
-- **Private Endpoints:** Storage and Key Vault move behind Private Endpoints (no public exposure).  
-- **Platform controls:** Azure Firewall/Defender policies enforce standardized guardrails and continuous compliance.
-<div align="center">
-  <img src="https://github.com/user-attachments/assets/a8eeaf5e-f941-4db5-9a1c-dfd87f05b160" width="70%" />
-</div>
-`NSGs tightened, firewalls tuned, public endpoints replaced by private endpoints, controls aligned to NIST SC-7(3).`
+## 🛡️**Architecture Overview**
+
+<table border="1" cellspacing="0" cellpadding="10" width="100%" style="table-layout:fixed;">
+  <tr>
+    <th align="left" width="50%">🔓 Before — Deliberately Vulnerable</th>
+    <th align="left" width="50%">🔒 After — Secured &amp; Automated</th>
+  </tr>
+  <tr valign="top">
+    <td>
+      <div style="font-size:14px; line-height:1.25;">
+<pre style="margin:0;">
+       ┌──────────────────────────┐
+       │ Microsoft Sentinel (SIEM)│
+       │ + Log Analytics          │
+       └───────────┬──────────────┘
+                   │
+     ┌─────────────┴─────────────┐
+     │                           │
+┌──────────────┐           ┌──────────────┐
+│ NSG Flows    │           │ Defender     │
+│ (malicious)  │           │ (posture)    │
+└──────┬───────┘           └──────┬───────┘
+       │                           │
+ ┌─────▼─────┐               ┌─────▼─────┐
+ │ Windows   │               │ Linux     │
+ │ (RDP/SMB) │               │ (SSH)     │
+ └─────┬─────┘               └─────┬─────┘
+       │                           │
+       ▼                           ▼
+┌──────────────────────────────────────┐
+│ Sentinel Correlation + Playbooks     │
+│ KQL → Alerts → Response → Dashboards │
+└──────────────────────────────────────┘
+</pre>
+      </div>
+    </td>
+    <td>
+      <div style="font-size:14px; line-height:1.25;">
+<pre style="margin:0;">
+       ┌──────────────────────────┐
+       │ Microsoft Sentinel (SIEM)│
+       │ + Defender (NIST)        │
+       └───────────┬──────────────┘
+                   │
+     ┌─────────────┴─────────────┐
+     │                           │
+┌──────────────┐           ┌──────────────┐
+│ Azure FW     │           │ NSGs         │
+│ (segment)    │           │ allow-list   │
+└──────┬───────┘           └──────┬───────┘
+       │                           │
+ ┌─────▼─────┐               ┌─────▼─────┐
+ │ Private   │               │ Sentinel   │
+ │ Endpoints │               │ Agents AMA │
+ │ (KV/SQL)  │               │ (Win+Linux)│
+ └─────┬─────┘               └─────┬─────┘
+       │                           │
+       ▼                           ▼
+┌──────────────────────────────────────┐
+│ Sentinel Automation (Logic Apps/SOAR)│
+│ Block IPs • Isolate • Notify • Enforce│
+└──────────────────────────────────────┘
+</pre>
+      </div>
+    </td>
+  </tr>
+</table>
 
 ---
 
@@ -86,10 +136,11 @@ NIST SP-800-53 serves as a comprehensive framework for establishing security and
 | Audit & Monitoring | AU-2, AU-6 | Centralized logging to Sentinel; triage workflows |
 | Incident Response | IR-4, IR-5 | Investigation Graph usage; playbook-driven response |
 
+<img width="742" height="374" alt="Image-2-NIST-800-53-Solution" src="https://github.com/user-attachments/assets/43f90272-0314-43b6-a5d5-73c44014d5c2" />
+
 ---
 
-# 📐**Setup & Baseline** (How the Lab Works)
-## **Methodology** (What you’ll see and why)
+## 🛠 **Setup & Baseline** (How the Lab Works)
 We intentionally expose prevalent services to capture genuine attack behaviors, such as scans, credential stuffing, and brute force attempts. Signals are transmitted to Sentinel; subsequently, we engage in a cycle of observation, detection, fortification, and re-evaluation.
 **observe → detect → harden → re-test**.
 
@@ -112,7 +163,7 @@ Initial Attack Surface (What’s Exposed)
 # 🛠️**Initial Sentinel Monitoring**
 > Cyber Threat Landscape: Visualizing Live Cyberattacks with Sentinel Maps
 
-## 🌐1. **Network Security Groups (NSG)** – Malicious Inbound Flows
+## 1️⃣ **Network Security Groups (NSG)** — Malicious Inbound Flows
 This query identifies potentially malicious inbound traffic targeting your environment through Azure Network Security Groups (NSGs). It focuses on flows categorized as malicious that have been allowed access to your virtual network, often from untrusted or unidentified IP addresses associated with threats.
 
 Monitoring this traffic is crucial for security teams to detect early signs of compromise, including reconnaissance scans and brute-force attacks. Analysts can streamline threat investigations by presenting key information, such as source and destination IP addresses and timestamps.
@@ -153,9 +204,8 @@ AzureNetworkAnalytics_CL
   <img src="https://github.com/user-attachments/assets/73cc9fbe-f8b9-4593-b40f-f4a485c9150b" width="600">
 </p>
 
-## 🐧2. **Linux SSH Attacks** – Authentication Failures
+## 2️⃣ **Linux SSH Attacks** — Authentication Failures
 SSH services on Ubuntu servers faced persistent brute-force login attempts. Sentinel flagged multiple password failures from a small set of rotating global IPs.
-
 * **Phase 1:** Detection began with hundreds of "Failed password" messages in the Syslog stream.
 * **Phase 2:** Analysts used automation to isolate attacker IPs and block them at the NSG level. These attacks slowed significantly post-hardening.
 
@@ -178,9 +228,8 @@ Syslog
   <img src="https://github.com/user-attachments/assets/f722c441-841d-4044-9181-3f2cea84a558" width="600">
 </p>
 
-## 🪟3. **Windows RDP Attacks** – SMB/RDP Authentication Failures
+## 3️⃣ **Windows RDP Attacks** — SMB/RDP Authentication Failures
 Attackers repeatedly targeted exposed Windows VMs through port 3389 using common usernames and password variations. These brute-force attempts triggered Sentinel rules once they reached detection thresholds.
-
 * **Phase 1:** Failed logons were seen in `SecurityEvent` logs, marked with EventID 4625 and logonType 10 (RDP).
 * **Phase 2:** Accounts were protected by enabling lockouts and narrowing NSG rules.
 
@@ -204,7 +253,7 @@ SecurityEvent
   <img src="https://github.com/user-attachments/assets/97d93c53-713c-4857-9643-a3149a2317f0" width="600">
 </p>
 
-## 🛢️4. **SQL Server Attacks** – Authentication Failures
+## 4️⃣ **SQL Server Attacks** — Authentication Failures
 
 SQL Server faced login brute-force attempts through unauthenticated probes targeting default accounts, such as the "sa" account. Sentinel registered spikes in failed logins and clustered alerts from similar IP ranges.
 
@@ -294,11 +343,43 @@ These visuals illustrate how the lab's single virtual network was divided into t
 
 ---
 
+# 🌐**Azure Architecture Recap — Assessment & Impact Review**
+
+This section highlights the transformation of the Azure SOC Lab following the implementation of security hardening. It compares pre- and post-mitigation architectures, validates NIST SP 800-53 compliance, and quantifies the measurable reduction in attack activity across the environment.
+
+Open Exposure ➜ Live Attacks ➜ Hardening ➜ Zero Incidents
+
+## 🔓**Initial Azure Architecture** — Before (Deliberately Vulnerable)
+The Azure environment (Linux SSH, Windows RDP/SMB, SQL) was configured with basic security designed to simulate a high-risk production workload in a sandboxed environment (the honeynet) and attract live cyber threats, gather telemetry, and observe adversary behavior.
+- **Public exposure of critical resources:** Windows & Linux VMs, SQL Server, Storage, Key Vault reachable from the internet.  
+- **Permissive NSGs:** Broad inbound rules allow scanning, brute force, and lateral probes.  
+- **Initial monitoring:** Logs centralized in Log Analytics and surfaced in Sentinel for alerts and investigations.
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/f5ec8a80-09b3-42a4-ac2b-8f6cfb5d2918" width="70%" />
+</div>
+`Public-facing VMs & services are  exposed and attract attackers.`
+
+---
+
+## 🔒**Hardened Azure Architecture** —  After (Secure)
+Following the threat analysis, the environment was restructured to align with secure architecture principles and NIST SP 800-53, specifically SC-7(3) for Access Restrictions. Key enhancements included minimizing external exposure, tightening NSG rules, segmenting subnets/VLANs, and securing OS/app configurations. Data now flows into Microsoft Sentinel for enhanced correlation, improved alerts, and more effective investigations.
+- **Restricted access:** NSGs allow only trusted source IPs; deny all else.  
+- **Private Endpoints:** Storage and Key Vault move behind Private Endpoints (no public exposure).  
+- **Platform controls:** Azure Firewall/Defender policies enforce standardized guardrails and continuous compliance.
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/a8eeaf5e-f941-4db5-9a1c-dfd87f05b160" width="70%" />
+</div>
+`NSGs tightened, firewalls tuned, public endpoints replaced by private endpoints, controls aligned to NIST SC-7(3).`
+
+---
+
 ### 🏛️**Azure NIST Overview**
 NIST SP-800-53 is a comprehensive guideline for security and privacy controls in federal information systems. It serves as the foundation for compliance frameworks such as FedRAMP, CSF, and Azure Security Benchmark.
 To check NIST SP-800-53-R5 compliance:
 > Navigate to: **Azure Home > Microsoft Defender for Cloud > Regulatory compliance > NIST SP-800-53-R5**
   <img src="https://github.com/reyestech/Azure-Honeynet-and-Sentinel-Hardening-/assets/153461962/00b13f92-53cb-4cec-a630-d168dcec4542" alt="Defender compliance 1" width="700"/>
+
+---
 
 ## 📊**Metrics & Results**
 
@@ -316,9 +397,9 @@ To check NIST SP-800-53-R5 compliance:
 
 > 🔍 These figures confirm a complete elimination of detected attacks after hardening.
 
-🧱 This comparison shows how exposed infrastructure was transformed into a secure environment by integrating best practices, including private endpoints and network security group (NSG) restrictions.sa
+🧱 This comparison shows how exposed infrastructure was transformed into a secure environment by integrating best practices, including private endpoints and network security group (NSG) restrictions
 
-----
+---
 
 ## 🔄**Kusto Query Language (KQL) & Python SDK Automation Queries**
 
@@ -380,9 +461,10 @@ AzureNetworkAnalytics_CL
 
 ---
 
-##  🏁 **Conclusion**
+# 🏁 **Conclusion**
 The honeynet deployed in the Microsoft Azure environment simulated a high-risk scenario exposed to modern cyberattacks via misconfigured virtual machines. Utilizing Azure Log Analytics and Microsoft Sentinel for centralized logging enabled real-time threat alerts and visualization, supporting structured triage workflows akin to a SOC.
 
 Following a baseline threat analysis, the environment was fortified with Azure-native security controls based on NIST SP 800-53, resulting in a notable decrease in unauthorized access attempts and brute-force attacks. This highlights the importance of layered security and continuous monitoring in strengthening cloud security.
 
----
+<img width="1095" height="625" alt="Image-5-NIST-800-53-Solution" src="https://github.com/user-attachments/assets/792c083d-8534-4e88-8e3f-840aab96c174" />
+
