@@ -24,7 +24,8 @@ Detect attacks fast → harden → prove the impact.
 
 # 📜**Executive Summary**
 This runbook outlines the framework for a live Azure honeynet comprising intentionally vulnerable Windows, Linux, and SQL Server virtual machines, strategically designed to attract commodity-level attacks. Microsoft Sentinel is utilized to ingest and correlate telemetry in real-time, while guidance from Microsoft Defender for Cloud—anchored to **NIST SP 800-53**—provides a robust foundation for hardening our systems. We establish a risk baseline, deploy appropriate security controls, and subsequently conduct re-testing to validate the effectiveness of our improvements.
-**Outcomes at a glance**
+
+### **Outcomes at a glance**
 - Reduced failed SSH/RDP/SQL authentications after hardening  
 - Malicious IPs blocked earlier via NSG and subnet isolation  
 - Faster investigations using Sentinel incidents + Investigation Graph pivots
@@ -32,7 +33,7 @@ This runbook outlines the framework for a live Azure honeynet comprising intenti
 ---
 
 ## 🧪 **Methodology**
-Our comprehensive six-phase lifecycle enhances a deliberately vulnerable Azure environment, transforming it into a self-defending cloud workload. This process guarantees that insights gained are systematically integrated into automated protection strategies.
+Our comprehensive six-phase lifecycle enhances a deliberately vulnerable Azure environment, transforming it into a self-defending cloud workload. This process guarantees that insights gained are systematically integrated into automated protection strategies. <br>
 **observe → detect → harden → re-test**.
 
 | 🧭 **Phase** | 🎯 **Objective** | ⚙️ **Key Actions** |
@@ -45,12 +46,11 @@ Our comprehensive six-phase lifecycle enhances a deliberately vulnerable Azure e
 | **6️⃣ Post-Hardening Validation** | Verify improvement | Re-run KQL queries and visualize "Before vs After" metrics. |
 > A structured **six-phase lifecycle** evolves the lab from *vulnerable → monitored → hardened*, ensuring measurable improvements in posture and detection accuracy.
 
-## 🧠 Summary
-| Phase | Objective | Key Outcome |
+## 🧠 **Summary**
+| **Phase** | **Objective** | **Key Outcome** |
 |:------|:-----------|:-------------|
 | **Before** | Observe & baseline attacks | Captured brute-force and scanning activity from global IPs |
 | **After** | Harden & automate | Achieved **100% reduction** in Sentinel incidents within 24h |
-
 
 ---
 
@@ -141,7 +141,7 @@ NIST SP-800-53 serves as a comprehensive framework for establishing security and
 ---
 
 ## 🛠 **Setup & Baseline** (How the Lab Works)
-We intentionally expose prevalent services to capture genuine attack behaviors, such as scans, credential stuffing, and brute force attempts. Signals are transmitted to Sentinel; subsequently, we engage in a cycle of observation, detection, fortification, and re-evaluation.
+We intentionally expose prevalent services to capture genuine attack behaviors, such as scans, credential stuffing, and brute force attempts. Signals are transmitted to Sentinel; subsequently, we engage in a cycle of observation, detection, fortification, and re-evaluation.<br>
 **observe → detect → harden → re-test**.
 
 ### Starting Baseline (Deliberately Vulnerable)
@@ -296,7 +296,7 @@ This section highlights how Microsoft Sentinel was used to investigate and respo
 ## 📉**Analyzing the Traffic**
 Sentinel analytics helped correlate these events, enabling a detailed examination of attacker behavior, IP reputation, and sequence of actions. I analyzed both successful and failed attempts, filtering out false positives and tracking escalation patterns.
 
-  **The included visuals show:**
+**The included visuals show:**
 > 1.	Sharp spikes in brute-force login attempts during the vulnerable phase
 > 2.	NSG flow logs mapping inbound malicious traffic
 > 3.	Timelines that illustrate how these threats stopped once hardening controls were applied
@@ -331,8 +331,7 @@ After implementing hardening measures, we detected no malicious activity. All qu
 </p>
 
 ## 🛡️**VLAN and Subnet Configuration**
-These visuals illustrate how the lab's single virtual network was divided into three purpose-built subnets. These subnets serve as isolation zones, restricting traffic and limiting the potential damage if an attacker compromises a single host.
-
+These visuals illustrate how the lab's single virtual network was divided into three purpose-built subnets. These subnets serve as isolation zones, restricting traffic and limiting the potential damage if an attacker compromises a single host. <br>
 **Azure Topology:** The Azure topology view displays all virtual machines (VMs), databases, and gateways on a single subnet within a virtual network. These subnets are separate rooms within the same building, each with doors (network security groups) that can be locked individually. The resource list in the right-hand pane is filtered by subnet, confirming that web, SQL, and management workloads reside in their segments.
 
 <p align="left">
@@ -344,20 +343,18 @@ These visuals illustrate how the lab's single virtual network was divided into t
 ---
 
 # 🌐**Azure Architecture Recap — Assessment & Impact Review**
-
-This section highlights the transformation of the Azure SOC Lab following the implementation of security hardening. It compares pre- and post-mitigation architectures, validates NIST SP 800-53 compliance, and quantifies the measurable reduction in attack activity across the environment.
-
-Open Exposure ➜ Live Attacks ➜ Hardening ➜ Zero Incidents
+This section highlights the transformation of the Azure SOC Lab following the implementation of security hardening. It compares pre- and post-mitigation architectures, validates NIST SP 800-53 compliance, and quantifies the measurable reduction in attack activity across the environment. <br>
+**Open Exposure ➜ Live Attacks ➜ Hardening ➜ Zero Incidents**
 
 ## 🔓**Initial Azure Architecture** — Before (Deliberately Vulnerable)
-The Azure environment (Linux SSH, Windows RDP/SMB, SQL) was configured with basic security designed to simulate a high-risk production workload in a sandboxed environment (the honeynet) and attract live cyber threats, gather telemetry, and observe adversary behavior.
+The Azure environment (Linux SSH, Windows RDP/SMB, SQL) was configured with basic security designed to simulate a high-risk production workload in a sandboxed environment (the honeynet) and attract live cyber threats, gather telemetry, and observe adversary behavior. <br>
 - **Public exposure of critical resources:** Windows & Linux VMs, SQL Server, Storage, Key Vault reachable from the internet.  
 - **Permissive NSGs:** Broad inbound rules allow scanning, brute force, and lateral probes.  
 - **Initial monitoring:** Logs centralized in Log Analytics and surfaced in Sentinel for alerts and investigations.
 <div align="center">
   <img src="https://github.com/user-attachments/assets/f5ec8a80-09b3-42a4-ac2b-8f6cfb5d2918" width="70%" />
 </div>
-`Public-facing VMs & services are  exposed and attract attackers.`
+> Public-facing VMs & services are  exposed and attract attackers.
 
 ---
 
@@ -369,7 +366,7 @@ Following the threat analysis, the environment was restructured to align with se
 <div align="center">
   <img src="https://github.com/user-attachments/assets/a8eeaf5e-f941-4db5-9a1c-dfd87f05b160" width="70%" />
 </div>
-`NSGs tightened, firewalls tuned, public endpoints replaced by private endpoints, controls aligned to NIST SC-7(3).`
+> NSGs tightened, firewalls tuned, public endpoints replaced by private endpoints, controls aligned to NIST SC-7(3).
 
 ---
 
@@ -382,7 +379,6 @@ To check NIST SP-800-53-R5 compliance:
 ---
 
 ## 📊**Metrics & Results**
-
 > The dramatic drop in alerts, flows, and incidents demonstrates how quickly and effectively the environment improved after implementing targeted hardening strategies.
 
 ## ⏱️**Before vs After** (24 h)
