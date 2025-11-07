@@ -124,22 +124,6 @@ Our comprehensive six-phase lifecycle enhances a deliberately vulnerable Azure e
 
 ---
 
-## 🏛️**NIST Overview**
-NIST SP-800-53 serves as a comprehensive framework for establishing security and privacy controls within federal information systems. It is foundational for various compliance frameworks, including FedRAMP, the Cybersecurity Framework (CSF), and the Azure Security Benchmark. This structured approach facilitates the effective management of security controls throughout their lifecycle, ultimately enhancing an organization's resilience against emerging threats.
-
-### **NIST Control Mapping** (Quick View)
-| Area | Example Controls | What We Implement |
-|---|---|---|
-| Network Boundary | SC-7, AC-4 | Least-privilege NSGs, allow-lists, subnet isolation |
-| Identification & Auth | IA-2, IA-5 | Stronger auth/lockout/back-off on exposed services |
-| System/Comms Protection | SC-5, SC-12 | Disable weak protocols; encryption where supported |
-| Audit & Monitoring | AU-2, AU-6 | Centralized logging to Sentinel; triage workflows |
-| Incident Response | IR-4, IR-5 | Investigation Graph usage; playbook-driven response |
-
-<img width="742" height="374" alt="Image-2-NIST-800-53-Solution" src="https://github.com/user-attachments/assets/43f90272-0314-43b6-a5d5-73c44014d5c2" />
-
----
-
 ## 🛠 **Setup & Baseline** (How the Lab Works)
 We intentionally expose prevalent services to capture genuine attack behaviors, such as scans, credential stuffing, and brute force attempts. Signals are transmitted to Sentinel; subsequently, we engage in a cycle of observation, detection, fortification, and re-evaluation.<br>
 **observe → detect → harden → re-test**.
@@ -157,6 +141,35 @@ Initial Attack Surface (What’s Exposed)
 <p align="center">
   <img src="https://github.com/reyestech/Azure-Honeynet-and-Sentinel-Hardening-/assets/153461962/70416dd1-70eb-4933-a0c7-f0a341276abb" width="700">
 </p>
+
+---
+
+## 🏛️**NIST Overview**
+NIST SP-800-53 serves as a comprehensive framework for establishing security and privacy controls within federal information systems. It is foundational for various compliance frameworks, including FedRAMP, the Cybersecurity Framework (CSF), and the Azure Security Benchmark. This structured approach facilitates the effective management of security controls throughout their lifecycle, ultimately enhancing an organization's resilience against emerging threats.
+
+### **NIST Control Mapping** (Quick View)
+| Area | Example Controls | What We Implement |
+|---|---|---|
+| Network Boundary | SC-7, AC-4 | Least-privilege NSGs, allow-lists, subnet isolation |
+| Identification & Auth | IA-2, IA-5 | Stronger auth/lockout/back-off on exposed services |
+| System/Comms Protection | SC-5, SC-12 | Disable weak protocols; encryption where supported |
+| Audit & Monitoring | AU-2, AU-6 | Centralized logging to Sentinel; triage workflows |
+| Incident Response | IR-4, IR-5 | Investigation Graph usage; playbook-driven response |
+
+<img width="742" height="374" alt="Image-2-NIST-800-53-Solution" src="https://github.com/user-attachments/assets/43f90272-0314-43b6-a5d5-73c44014d5c2" />
+
+  - NIST SP 800-53 R5 – Access Control (AC) Findings:
+> AC. Access Control: In access control, we can see what is missing to meet NIST standards.
+
+<p align="left">
+  <img src="https://github.com/reyestech/Azure-Honeynet-and-Sentinel-Hardening-/assets/153461962/1a89ae0f-1d81-47b7-852d-b66cdafb0748" width="600">
+</p>
+
+<p align="left">
+  <img src="https://github.com/user-attachments/assets/b79fc23a-764b-4b23-afe5-2962621f2e6b" width="600">
+</p>
+
+
 
 ---
 
