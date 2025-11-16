@@ -413,7 +413,7 @@ To check NIST SP-800-53-R5 compliance:
 ## 🔄**Kusto Query Language (KQL) & Python SDK Automation Queries**
 
 <details>
-<summary> 📋 Click to View KQL All Automation Queries <</summary>
+<summary> 📋 Click to View KQL All Automation Queries </summary>
   
 ### Start & Stop Time
 ```
